@@ -47,23 +47,43 @@ def generate_chunks(text, max_word=500):
 
     return chunks
 
+
+
 # Streamlit UI
 st.title('Text Summarization App 📄')
 
-input_text = st.text_area(
+# Initialize session state
+if 'input_text' not in st.session_state:
+    st.session_state.input_text = ""
+
+# Define clear function
+def clear_text():
+    st.session_state.input_text = ""
+
+# Text area linked to session_state
+st.text_area(
     "Write your article here:",
-    height=180
+    value=st.session_state.input_text,
+    height=180,
+    key="input_text"
 )
 
-# Summarize button
-if st.button('Summarize'):
-    if input_text.strip() == "":
-        st.warning('Please enter text')
-    else:
-        with st.spinner('Summarizing...'):
-            chunks = generate_chunks(input_text)
-            result = model(chunks, max_length=80, min_length=10)
-            summary = " ".join([res['summary_text'] for res in result])
+# Create two columns for buttons
+col1, col2 = st.columns(2)
 
-        st.subheader("Summary:")
-        st.write(summary)
+with col1:
+    if st.button('Summarize'):
+        if st.session_state.input_text.strip() == "":
+            st.warning('Please enter text')
+        else:
+            with st.spinner('Summarizing...'):
+                chunks = generate_chunks(st.session_state.input_text)
+                result = model(chunks, max_length=80, min_length=10)
+                summary = " ".join([res['summary_text'] for res in result])
+            st.subheader("Summary:")
+            st.write(summary)
+
+with col2:
+    st.button("Clear", on_click=clear_text)
+
+
