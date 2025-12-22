@@ -2,6 +2,7 @@ A simple web application for automatic text summarization using Hugging Face Tra
 
 
 run code:  python -m streamlit run "app.py"
+
 link streamlit app: **https://mostafa-3bdelaal-summarization-model.streamlit.app**
 
 
